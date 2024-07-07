@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">SmartMovie</string>
+    <string name="play">Play</string>
+    <string name="explore">Explore</string>
+    <string name="original_title">Movie Title</string>
+    <string name="vote_average">9.6</string>
+    <string name="watch_now">Watch now</string>
+</resources>

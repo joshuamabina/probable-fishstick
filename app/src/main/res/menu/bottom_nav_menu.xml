@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/navigation_explore"
+        android:title="@string/explore"
+        android:icon="@drawable/baseline_explore_24" />
+    <item
+        android:id="@+id/navigation_play"
+        android:title="@string/play"
+        android:icon="@drawable/baseline_local_play_24" />
+</menu>
