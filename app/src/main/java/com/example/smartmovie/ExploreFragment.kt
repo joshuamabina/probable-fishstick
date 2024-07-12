@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.example.smartmovie.databinding.FragmentExploreBinding
 import kotlinx.coroutines.launch
@@ -13,6 +14,7 @@ class ExploreFragment : Fragment() {
     private var _binding: FragmentExploreBinding? = null
     private val binding get() = _binding!!
     private lateinit var moviePagerAdapter: MoviePagerAdapter
+    private lateinit var exploreMovieViewModel: MovieViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -26,7 +28,11 @@ class ExploreFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        moviePagerAdapter = MoviePagerAdapter(emptyList())
+        val movieDao = DB.getDatabase(requireContext()).movieDao()
+        val repository = MovieRepository(movieDao)
+        exploreMovieViewModel = ViewModelProvider(this, MovieViewModelFactory(repository)).get(MovieViewModel::class.java)
+
+        moviePagerAdapter = MoviePagerAdapter(emptyList(), exploreMovieViewModel)
         binding.moviePager.adapter = moviePagerAdapter
 
         getMovies()

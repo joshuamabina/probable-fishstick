@@ -1,18 +1,23 @@
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.smartmovie.MovieResult
+import com.example.smartmovie.Movie
 import com.example.smartmovie.databinding.ItemMovieBinding
 
-class PlaylistAdapter(private var movieResults: List<MovieResult>) :
+class PlaylistAdapter(private var movies: List<Movie>) :
     RecyclerView.Adapter<PlaylistAdapter.MovieViewHolder>() {
 
     inner class MovieViewHolder(private val binding: ItemMovieBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(movieResult: MovieResult) {
-            binding.textOriginalTitle.text = movieResult.originalTitle
-            binding.textVoteAverage.text = movieResult.voteAverage.toString()
+        fun bind(movie: Movie) {
+            binding.textOriginalTitle.text = movie.originalTitle
+            val maxLength = 17
+            val originalTitle = binding.textOriginalTitle.text.toString()
+            binding.textOriginalTitle.text = if (originalTitle.length > maxLength) "${originalTitle.substring(0, maxLength)}${"..." }" else originalTitle
+
+            binding.textVoteAverage.text = "%.1f".format(movie.voteAverage)
         }
     }
 
@@ -22,12 +27,14 @@ class PlaylistAdapter(private var movieResults: List<MovieResult>) :
     }
 
     override fun onBindViewHolder(holder: MovieViewHolder, position: Int) {
-        holder.bind(movieResults[position])
+        Log.d("PlaylistAdapter.onBindViewHolder", "movies: ${movies.toString()}")
+        holder.bind(movies[position])
     }
 
-    override fun getItemCount(): Int = movieResults.size
+    override fun getItemCount(): Int = movies.size
 
-    fun updateItems(newMovieResults: List<MovieResult>) {
-        movieResults = newMovieResults
+    fun updateItems(newMovies : List<Movie>) {
+        movies = newMovies
+        notifyDataSetChanged()
     }
 }

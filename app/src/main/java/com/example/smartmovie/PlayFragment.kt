@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.smartmovie.databinding.FragmentPlayBinding
 
@@ -14,6 +15,11 @@ class PlayFragment : Fragment() {
     private var _binding: FragmentPlayBinding? = null
     private val binding get() = _binding!!
     private lateinit var playlistAdapter: PlaylistAdapter
+
+    // Initialize ViewModel with viewModels delegate
+    private val playlistMovieViewModel: MovieViewModel by viewModels {
+        MovieViewModelFactory(MovieRepository(DB.getDatabase(requireContext()).movieDao()))
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -27,13 +33,16 @@ class PlayFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        playlistAdapter = PlaylistAdapter(emptyList<MovieResult>())
+        playlistAdapter = PlaylistAdapter(emptyList())
         binding.playlistView.adapter = playlistAdapter
         binding.playlistView.layoutManager = LinearLayoutManager(context)
 
-        val movies = getMovies()
-
-        playlistAdapter.updateItems(movies)
+        // Observe
+        playlistMovieViewModel.getMovies().observe(viewLifecycleOwner) { movies ->
+            movies?.let {
+                playlistAdapter.updateItems(it)
+            }
+        }
     }
 
     private fun getMovies(): List<MovieResult> {

@@ -9,7 +9,10 @@ import androidx.viewpager.widget.PagerAdapter
 import com.bumptech.glide.Glide
 import com.example.smartmovie.databinding.LayoutMovieBinding
 
-class MoviePagerAdapter(private var movieResults: List<MovieResult>) : PagerAdapter() {
+class MoviePagerAdapter(
+    private var movieResults: List<MovieResult>,
+    private var movieViewModel: MovieViewModel
+) : PagerAdapter() {
     override fun getCount(): Int = movieResults.size
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
@@ -23,14 +26,21 @@ class MoviePagerAdapter(private var movieResults: List<MovieResult>) : PagerAdap
 
         container.addView(layoutMovieBinding.root)
 
-        val likeButton = layoutMovieBinding.likeButton
-        likeButton.setOnClickListener {
-            Log.d("MoviePagerAdapter.like", "I Like This:${movie.originalTitle}")
+        layoutMovieBinding.likeButton.setOnClickListener {
+            val likedMovie = Movie(
+                originalTitle = movie.originalTitle,
+                posterPath = movie.posterPath,
+                overview = movie.overview,
+                voteAverage = movie.voteAverage
+            )
+
+            movieViewModel.insert(likedMovie)
+            Log.d("MoviePagerAdapter.likeButton.insert", "I Like This:${likedMovie.originalTitle}")
+
             nextItem(container, position)
         }
 
-        val dislikeButton = layoutMovieBinding.dislikeButton
-        dislikeButton.setOnClickListener {
+        layoutMovieBinding.dislikeButton.setOnClickListener {
             Log.d("MainActivity.dislikeButton.after", "after: I Dislike This ${movie.originalTitle}")
             nextItem(container, position)
         }
